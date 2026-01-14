@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega Alpine</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+</head>
+<body>
+    <div x-data="data()">
+        <input type="text" placeholder="Buscar pokemon..." x-model="query">
+        <button @click="fetchPokemons()">Buscar Pokemones</button>
+
+        <nav x-show="open" >
+            <ul>
+                <template x-for="pokemon in pokemons" :key="pokemon.name">
+                    <li>
+                        <span x-text="pokemon.name"></span>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+
+    </div>
+
+    <script>
+        function data() {
+            return {
+                open: false,
+                pokemons: [],
+                query: '',
+                async fetchPokemons() {
+                    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100');
+                    const data = await response.json();
+                    this.pokemons = data.results.filter(pokemon =>
+                        pokemon.name.includes(this.query.toLowerCase())
+                    );
+                    this.open = !this.open;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
